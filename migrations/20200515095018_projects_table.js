@@ -5,7 +5,7 @@ exports.up = function(knex) {
         projects.increments();
         projects.string('name', 255).notNullable();
         projects.string('description');
-        projects.boolean('completed').notNullable().defaultTo(0);
+        projects.boolean('completed').notNullable().defaultTo();
     })
     .createTable('tasks', tasks => {
         tasks.increments();

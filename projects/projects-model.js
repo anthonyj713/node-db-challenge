@@ -5,7 +5,8 @@ module.exports = {
     findById,
     findTasks,
     findResources,
-    add
+    add, 
+    addTask
 };
 
 function find(){
@@ -19,10 +20,16 @@ function findById(id){
 };
 
 function findTasks(id){
-    return db('projects')
-    .join('tasks', 'projects.id', '=', 'tasks.projects_id')
-    .select('projects.name', 'projects.description', 'tasks')
+    return db('tasks')
+    .join('projects', 'projects.id', '=', 'tasks.projects_id')
+    .select('projects.name', 'projects.description', 'tasks.id','tasks.description', 'tasks.notes')
     .where('projects_id', id)
+};
+
+function findTaskId(id){
+    return db('tasks')
+    .where('id', id)
+    .first();
 };
 
 function findResources(id){
@@ -37,5 +44,13 @@ function add(project){
     .insert(project, 'id')
     .then(ids => {
         return findById(ids[0])
+    });
+};
+
+function addTask(task){
+    return db('tasks')
+    .insert(task, 'id')
+    .then((ids) => {
+        return findTaskId(ids[0]);
     });
 };
