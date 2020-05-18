@@ -58,7 +58,23 @@ router.get('/:id/tasks', (req, res) => {
 });
 
 router.get('/:id/resources', (req, res) => {
-
+    const { id } = req.params;
+    Projects.findProjectResources(id)
+    .then(resources => {
+        if (resources.length) {
+            res.json(resources);
+        } else {
+            res.status(404).json({
+                message: 'Could not find resources for given project'
+            });
+        }
+    })
+    .catch(err => {
+        console.log(err);
+        res.status(500).json({
+            message: "Failed to retrieve resources"
+        });
+    });
 });
 
 router.post('/', (req, res) => {
@@ -77,7 +93,8 @@ router.post('/', (req, res) => {
 
 router.post('/:id/tasks', (req, res) => {
     const taskData = req.body;
-    Projects.addTask(taskData)
+    const { id } = req.params;
+    Projects.addTask(taskData, id)
     .then(task => {
         res.status(201).json(task);
     })
@@ -89,8 +106,19 @@ router.post('/:id/tasks', (req, res) => {
     });
 });
 
-router.post('/resources', (req, res) => {
-
+router.post('/:id/resources', (req, res) => {
+    const resourceData = req.body;
+    const { id } = req.params;
+    Projects.addResource(resourceData, id)
+    .then(resource => {
+        res.status(201).json(resource);
+    })
+    .catch(err => {
+        console.log(err);
+        res.status(500).json({
+            message: 'Failed to create new resource'
+        });
+    });
 });
 
 module.exports = router;

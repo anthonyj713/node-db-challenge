@@ -5,7 +5,7 @@ exports.up = function(knex) {
         projects.increments();
         projects.string('name', 255).notNullable();
         projects.string('description');
-        projects.boolean('completed').notNullable().defaultTo();
+        projects.boolean('completed').notNullable().defaultTo(false);
     })
     .createTable('tasks', tasks => {
         tasks.increments();
@@ -19,33 +19,36 @@ exports.up = function(knex) {
             .onDelete('CASCADE');
         tasks.string('description').notNullable();
         tasks.string('notes');
-        tasks.boolean('completed').notNullable().defaultTo(0);
+        tasks.boolean('completed').notNullable().defaultTo(false);
         })
-    .createTable('resources', resources => {
-        resources.increments();
-        resources.string('name', 255).notNullable();
-        resources.string('description');
-    })
-    .createTable('project_resources', projectResources => {
-        projectResources.increments();
-        projectResources
-            .integer('projects_id')
-            .unsigned()
-            .notNullable()
-            .references('id')
-            .inTable('projects')
-            .onUpdate('CASCADE')
-            .onDelete('CASCADE');
-        projectResources
-            .integer('resources_id')
-            .unsigned()
-            .notNullable()
-            .references('id')
-            .inTable('resources')
-            .onUpdate('CASCADE')
-            .onDelete('CASCADE');
-        projectResources.string('amount', 255);
-    })
+    
+.createTable('project_resources', projectResources => {
+    projectResources.increments();
+    projectResources
+        .integer('projects_id')
+        .unsigned()
+        .notNullable()
+        .references('id')
+        .inTable('projects')
+        .onUpdate('CASCADE')
+        .onDelete('CASCADE');
+    projectResources
+        .integer('resources_id')
+        .unsigned()
+        .notNullable()
+        .references('id')
+        .inTable('resources')
+        .onUpdate('CASCADE')
+        .onDelete('CASCADE');
+    projectResources.string('amount', 255);
+})
+.createTable('resources', resources => {
+    resources.increments();
+    resources.string('name', 255).notNullable();
+    resources.string('description');
+})
+
+
   };
 
 exports.down = function(knex) {
@@ -55,3 +58,4 @@ exports.down = function(knex) {
     .dropTableIfExists('tasks')
     .dropTableIfExists('projects')
   };
+
